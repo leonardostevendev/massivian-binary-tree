@@ -144,7 +144,6 @@ public class Tree {
         Node left = lowestCommonAncestor(root.getLeft(), a, b);
         Node right = lowestCommonAncestor(root.getRight(), a, b);
 
-        // If we get left and right not null , it is lca for a and b
         if (left != null && right != null)
             return root;
         if (left == null)
@@ -153,17 +152,14 @@ public class Tree {
             return left;
     }
 
-    public Node searchNode(Node root, int key)
+    public Node searchNode(Node root, long key)
     {
-        // Base Cases: root is null or key is present at root
         if (root==null || root.getVal()==key)
             return root;
 
-        // val is greater than root's key
         if (root.getVal() > key)
             return searchNode(root.getLeft(), key);
 
-        // val is less than root's key
         return searchNode(root.getRight(), key);
     }
 
