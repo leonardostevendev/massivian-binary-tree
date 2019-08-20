@@ -4,22 +4,21 @@ public class Tree {
 
     private Node root;
 
-    public Tree( int val ) {
-        this.root = new Node( val );
+    public Tree(long val) {
+        this.root = new Node(val);
     }
 
-    public Tree( Node root ) {
+    public Tree(Node root) {
         this.root = root;
     }
 
-    private void addNode( Node node, Node root ) {
+    private void addNode(Node node, Node root) {
         /* 2.- Partiendo de la raíz preguntamos: Nodo == null ( o no existe ) ? */
-        if ( root == null ) {
+        if (root == null) {
             this.setRoot(node);
-        }
-        else {
+        } else {
             /* 4.- En caso negativo preguntamos: X < Nodo */
-            if ( node.getVal() <= root.getVal() ) {
+            if (node.getVal() <= root.getVal()) {
                 /*
                  * 5.- En caso de ser menor pasamos al Nodo de la IZQUIERDA del
                  * que acabamos de preguntar y repetimos desde el paso 2
@@ -27,12 +26,10 @@ public class Tree {
                  */
                 if (root.getLeft() == null) {
                     root.setLeft(node);
+                } else {
+                    addNode(node, root.getLeft());
                 }
-                else {
-                    addNode( node , root.getLeft() );
-                }
-            }
-            else {
+            } else {
                 /*
                  * 6.- En caso de ser mayor pasamos al Nodo de la DERECHA y tal
                  * cual hicimos con el caso anterior repetimos desde el paso 2
@@ -40,57 +37,56 @@ public class Tree {
                  */
                 if (root.getRight() == null) {
                     root.setRight(node);
-                }
-                else {
-                    addNode( node, root.getRight() );
+                } else {
+                    addNode(node, root.getRight());
                 }
             }
         }
     }
 
-    public void addNode( Node node ) {
-        this.addNode( node , this.root );
+    public void addNode(Node node) {
+        this.addNode(node, this.root);
     }
 
-    public boolean removeNode( Node node ) {
+    public boolean removeNode(Node node) {
 
         boolean hasRightNode = node.getRight() != null ? true : false;
         boolean hasLeftNode = node.getLeft() != null ? true : false;
 
         if (!hasRightNode && !hasLeftNode) {
-            return removeNodeNoChild( node );
+            return removeNodeNoChild(node);
         }
 
-        if ( (hasRightNode && !hasLeftNode) || (!hasRightNode && hasLeftNode)) {
-            return removeNodeWithSingleChild( node );
+        if ((hasRightNode && !hasLeftNode) || (!hasRightNode && hasLeftNode)) {
+            return removeNodeWithSingleChild(node);
         }
 
-        if ( hasLeftNode && hasRightNode ) {
-            return removeComplexNode( node );
+        if (hasLeftNode && hasRightNode) {
+            return removeComplexNode(node);
         }
 
         return false;
     }
 
-    private boolean removeNodeNoChild( Node node ) {
+    private boolean removeNodeNoChild(Node node) {
 
         Node leftChild = node.getParent().getLeft();
         Node rightChild = node.getParent().getRight();
 
-        if ( leftChild == node ) {
-            node.getParent().setLeft( null );
+        if (leftChild == node) {
+            node.getParent().setLeft(null);
             return true;
         }
 
-        if ( rightChild == node) {
-            node.getParent().setRight( null );
+        if (rightChild == node) {
+            node.getParent().setRight(null);
             return true;
         }
 
         return false;
     }
 
-    private boolean removeNodeWithSingleChild( Node node ) {
+    private boolean removeNodeWithSingleChild(Node node) {
 
         Node leftChild = node.getParent().getLeft();
         Node rightChild = node.getParent().getRight();
@@ -98,8 +94,8 @@ public class Tree {
         Node currentChild = node.getLeft() != null ?
                 node.getLeft() : node.getRight();
 
-        if ( leftChild == node ) {
-            node.getParent().setLeft( currentChild );
+        if (leftChild == node) {
+            node.getParent().setLeft(currentChild);
 
             currentChild.setParent(node.getParent());
             node.setRight(null);
@@ -108,8 +104,8 @@ public class Tree {
             return true;
         }
 
-        if ( rightChild == node) {
-            node.getParent().setRight( currentChild );
+        if (rightChild == node) {
+            node.getParent().setRight(currentChild);
 
             currentChild.setParent(node.getParent());
             node.setRight(null);
@@ -121,12 +117,12 @@ public class Tree {
         return false;
     }
 
-    private boolean removeComplexNode( Node node ) {
+    private boolean removeComplexNode(Node node) {
         /* Tomar el hijo derecho del Nodo que queremos eliminar */
-        Node mostLeftNode = iterateLeft( node.getRight() );
-        if ( mostLeftNode != null ) {
-            node.setVal( mostLeftNode.getVal() );
-            removeNode( mostLeftNode );
+        Node mostLeftNode = iterateLeft(node.getRight());
+        if (mostLeftNode != null) {
+            node.setVal(mostLeftNode.getVal());
+            removeNode(mostLeftNode);
             return true;
         }
         return false;
@@ -134,9 +130,41 @@ public class Tree {
 
     private Node iterateLeft(Node node) {
         if (node.getLeft() != null) {
-            return iterateLeft( node.getLeft() );
+            return iterateLeft(node.getLeft());
         }
         return node;
+    }
+
+    public static Node lowestCommonAncestor(Node root, Node a, Node b) {
+        if (root == null)
+            return null;
+        if (root.getVal() == a.getVal() || root.getVal() == b.getVal())
+            return root;
+
+        Node left = lowestCommonAncestor(root.getLeft(), a, b);
+        Node right = lowestCommonAncestor(root.getRight(), a, b);
+
+        // If we get left and right not null , it is lca for a and b
+        if (left != null && right != null)
+            return root;
+        if (left == null)
+            return right;
+        else
+            return left;
+    }
+
+    public Node searchNode(Node root, int key)
+    {
+        // Base Cases: root is null or key is present at root
+        if (root==null || root.getVal()==key)
+            return root;
+
+        // val is greater than root's key
+        if (root.getVal() > key)
+            return searchNode(root.getLeft(), key);
+
+        // val is less than root's key
+        return searchNode(root.getRight(), key);
     }
 
     public Node getRoot() {
@@ -146,5 +174,4 @@ public class Tree {
     public void setRoot(Node root) {
         this.root = root;
     }
-
 }

@@ -2,21 +2,21 @@ package com.leonardostevendev.masivian.binarytree.structure;
 
 public class Node {
 
-    private int val;
+    private long val;
 
     private Node parent;
     private Node left;
     private Node right;
 
-    public Node(int val) {
+    public Node(long val) {
         this.val = val;
     }
 
-    public void setVal(int val) {
+    public void setVal(long val) {
         this.val = val;
     }
 
-    public int getVal() {
+    public long getVal() {
         return val;
     }
 
